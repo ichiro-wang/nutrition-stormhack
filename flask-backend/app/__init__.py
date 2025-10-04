@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager
-from .models import User
+from .models import User, db
 
 login_manager = LoginManager()
 
@@ -9,6 +9,9 @@ def create_app():
     
     # Load configuration
     app.config.from_object('config')
+
+    # Initialize extensions
+    db.init_app(app)
 
     # Import and register blueprints
     from .routes import main as main_blueprint
