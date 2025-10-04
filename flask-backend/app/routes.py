@@ -3,8 +3,11 @@ import pytesseract
 from PIL import Image
 import re
 import io
+import os
+from datetime import datetime
 from .models import db, NutritionLabel
-
+from .models import User
+from werkzeug.utils import secure_filename
 
 # Create a Blueprint for the app
 main = Blueprint('main', __name__)
@@ -25,9 +28,9 @@ def parse_nutrition_text(text):
     # ([\d.]+) captures numerical values, including decimals.
     patterns = {
         'calories': r'Calories\s+([\d.]+)',
-        'fat_g': r'Total Fat\s+([\d.]+)g',
-        'carbohydrate_g': r'Total Carbohydrate\s+([\d.]+)g',
-        'protein_g': r'Protein\s+([\d.]+)g'
+        'fat': r'Total Fat\s+([\d.]+)g',
+        'carbohydrate': r'Total Carbohydrate\s+([\d.]+)g',
+        'protein': r'Protein\s+([\d.]+)g'
     }
 
     for key, pattern in patterns.items():
@@ -40,34 +43,77 @@ def parse_nutrition_text(text):
 
     return nutrition_data
 
+@main.route('/api/user/<int:user_id>', methods=['PUT'])
+def update_user_profile(user_id):
+    """
+    Updates a user's profile data.
+    """
+    user = User.query.get_or_404(user_id)
+    data = request.json
+
+    ACTIVITY_LEVELS = {
+        'Sedentary': 1.2,
+        'Lightly active': 1.375,
+        'Moderately active': 1.55,
+        'Very active': 1.725,
+        'Extremely active': 1.9
+    }
+    
+    try:
+        if 'age' in data: user.age = int(data['age'])
+        if 'weight' in data: user.weight = float(data['weight'])
+        if 'height' in data: user.height = float(data['height'])
+        if 'gender' in data:
+            gender = str(data['gender']).upper()
+            if gender not in ['M', 'F']:
+                return jsonify({"error": "Gender must be 'M' or 'F'"}), 400
+            user.gender = gender
+        if 'activity_level' in data:
+            activity_level_str = data['activity_level']
+            if activity_level_str not in ACTIVITY_LEVELS:
+                return jsonify({"error": f"Invalid activity_level. Must be one of: {list(ACTIVITY_LEVELS.keys())}"}), 400
+            user.activity_level_factor = ACTIVITY_LEVELS[activity_level_str]
+            
+        db.session.commit()
+        return jsonify({"message": f"User {user_id} profile updated successfully."}), 200
+    except (ValueError, TypeError):
+        return jsonify({"error": "Invalid data format for one of the fields."}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+
 @main.route('/api/scan-nutrition-label', methods=['POST'])
 def scan_nutrition_label():
     """
     Accepts an image of a nutrition label, scans it using Tesseract OCR,
     and returns the extracted text.
-    It also accepts a 'quantity' to calculate total consumed nutrients.
+    It also accepts user data and quantity to calculate total consumed nutrients.
     """
-    # --- 1. Extract and validate all form data ---
-    form_data = request.form
-    required_fields = ['user_id', 'quantity', 'age', 'weight', 'height']
-    for field in required_fields:
-        if field not in form_data:
-            return jsonify({"error": f"Missing required field: {field}"}), 400
+    # --- Extract and validate user_id ---
+    if 'user_id' not in request.form:
+        return jsonify({"error": "Missing required field: user_id"}), 400
     try:
-        user_id = int(form_data.get('user_id'))
-        quantity = float(form_data.get('quantity'))
-        age = int(form_data.get('age'))
-        weight = float(form_data.get('weight'))
-        height = float(form_data.get('height'))
-        gender = str(form_data.get('gender', 'unspecified'))
-        
+        user_id = int(request.form.get('user_id'))
+        # Check if user exists
+        User.query.get_or_404(user_id)
+    except (ValueError, TypeError):
+        return jsonify({"error": "Invalid data format for user_id."}), 400
+
+    # --- Extract and validate quantity separately ---
+    if 'quantity' not in request.form:
+        return jsonify({"error": "Missing required field: quantity"}), 400
+    try:
+        quantity = float(request.form.get('quantity'))
         if quantity <= 0:
             return jsonify({"error": "Quantity must be a positive number"}), 400
-    except ValueError:
-        return jsonify({"error": "Invalid data format for one of the fields (user_id, quantity, age, weight, height, gender)."}), 400
+    except (ValueError, TypeError):
+        return jsonify({"error": "Invalid data format for quantity."}), 400
 
-    # --- 2. Process the image ---
-    # (This part remains the same)
+    # --- Extract and validate food_name ---
+    if 'food_name' not in request.form or not request.form.get('food_name').strip():
+        return jsonify({"error": "Missing required field: food_name"}), 400
+    food_name = request.form.get('food_name')
 
     if 'image' not in request.files:
         return jsonify({"error": "No image file provided"}), 400
@@ -79,34 +125,38 @@ def scan_nutrition_label():
 
     if file:
         try:
-            # --- 3. Scan image and parse text ---
             image_bytes = file.read()
+            # --- Save the image and create a URL ---
+            filename = secure_filename(f"{datetime.utcnow().isoformat()}-{file.filename}".replace(":", "-"))
+            upload_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'instance', 'uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+            image_path = os.path.join(upload_folder, filename)
+            with open(image_path, 'wb') as f:
+                f.write(image_bytes)
+            image_url = request.host_url + f'uploads/{filename}'
+
             image = Image.open(io.BytesIO(image_bytes))
             extracted_text = pytesseract.image_to_string(image)
             parsed_data = parse_nutrition_text(extracted_text)
 
             if parsed_data:
-                # --- 4. Calculate totals and prepare DB record ---
                 calculated_totals = {}
                 for key, value in parsed_data.items():
                     if isinstance(value, (int, float)):
                         calculated_totals[key] = round(value * quantity, 2)
 
-                # Combine user data with calculated nutrition data
                 final_data = {
                     'user_id': user_id,
-                    'age': age,
-                    'weight': weight,
-                    'height': height,
-                    'gender': gender,
-                    **calculated_totals
+                    'food_name': food_name,
+                    'quantity': quantity,
+                    'nutrition_data': calculated_totals, # Stored as JSON
+                    'date_logged': datetime.utcnow(),
+                    'image_url': image_url
                 }
 
-                # --- 5. Save to database and return response ---
                 new_label = NutritionLabel(**final_data)
                 db.session.add(new_label)
                 db.session.commit()
-
                 # Return the data that was just saved, including its new ID
                 return jsonify(new_label.to_dict()), 200
             
