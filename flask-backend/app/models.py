@@ -26,7 +26,7 @@ class User(db.Model, UserMixin):
             'height': self.height,
             'gender': self.gender,
             'activity_level': self.activity_level,
-            'tdee': self.tdee
+            'Recommend Calories': self.rec_Calories
         }
     
     def get_id(self):
