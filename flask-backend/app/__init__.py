@@ -1,4 +1,8 @@
 from flask import Flask
+from flask_login import LoginManager
+from .models import User
+
+login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__)
@@ -11,5 +15,11 @@ def create_app():
     app.register_blueprint(main_blueprint)
     from .user_routes import user_bp as user_blueprint
     app.register_blueprint(user_blueprint)
+
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(name):
+        return User.query.filter_by(name=name).first()
 
     return app

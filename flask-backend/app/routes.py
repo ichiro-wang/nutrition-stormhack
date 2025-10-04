@@ -2,13 +2,11 @@ from flask import Blueprint, jsonify, request
 from .models import db
 from .models import User
 from .services import process_and_save_nutrition_label
-from flask_login import LoginManager
+from flask_login import login_user, logout_user, login_required, current_user
 from nutritionfunctions import calcTDEE, calcMacronutrients
 
 # Create a Blueprint for the app
 main = Blueprint('main', __name__)
-
-login_manager = LoginManager()
 
 @main.route('/api/health', methods=['GET'])
 def health_check():
@@ -171,3 +169,25 @@ def get_data(data_id):
 def delete_data(data_id):
     # Here you would typically delete the data from the database
     return jsonify({"message": "Data deleted", "data_id": data_id}), 204
+
+@main.route('/api/login', methods=['POST'])
+def login():
+    data = request.json
+    if not data or 'name' not in data:
+        return jsonify({"error": "Missing name"}), 400
+    user = User.query.filter_by(name=data['name']).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    login_user(user)
+    return jsonify({"message": f"Logged in as {user.name}"}), 200
+
+@main.route('/api/logout', methods=['POST'])
+@login_required
+def logout():
+    logout_user()
+    return jsonify({"message": "Logged out"}), 200
+
+@main.route('/api/current-user', methods=['GET'])
+@login_required
+def get_current_user():
+    return jsonify({"name": current_user.name}), 200

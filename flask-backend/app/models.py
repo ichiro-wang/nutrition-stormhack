@@ -1,9 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 JSON = db.JSON
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)    # Profile information
     age = db.Column(db.Integer, nullable=True)
     weight = db.Column(db.Float, nullable=True) # in kg
@@ -14,14 +15,11 @@ class User(db.Model):
     # Calculated values
     rec_Calories = db.Column(db.Float, nullable=True) # Total Daily Energy Expenditure
 
-    def __repr__(self):
-        return f'<User {self.username}>'
-
     def to_dict(self):
         """Serializes the user object to a dictionary."""
         return {
             'id': self.id,
-            'username': self.username,
+            'name': self.name,
             'age': self.age,
             'weight': self.weight,
             'height': self.height,
@@ -29,6 +27,9 @@ class User(db.Model):
             'activity_level': self.activity_level,
             'tdee': self.tdee
         }
+    
+    def get_id(self):
+        return self.name
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
