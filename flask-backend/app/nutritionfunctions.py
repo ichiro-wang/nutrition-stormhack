@@ -9,11 +9,7 @@ def calcTDEE(weight, height, age, gender, activity_level):
     height (float): Height in centimeters.
     age (float): Age in years.
     gender (str): 'M' or 'F'.
-    activity_level (int): 1:'sedentary'
-                          2: 'lightly active'
-                          3: 'moderately active'
-                          4: 'very active'
-                          5: 'extra active'
+    activity_level (float): Activity level factor (1.2, 1.375, 1.55, 1.725, 1.9).
 
     Returns:
     float: Total Daily Energy Expenditure in calories.
@@ -25,21 +21,7 @@ def calcTDEE(weight, height, age, gender, activity_level):
     else:
         raise ValueError("gender must be M or F")
     
-    match activity_level:
-        case 1:
-            return bmr * 1.2
-        case 2:
-            return bmr * 1.375
-        case 3:
-            return bmr * 1.55
-        case 4:
-            return bmr * 1.725
-        case 5:
-            return bmr * 1.9
-        case _:
-            raise ValueError("activity_level must be between 1 and 5")  
-
-    return -1
+    return bmr * activity_level 
 
 def calcMacronutrients(TDEE):
     """
