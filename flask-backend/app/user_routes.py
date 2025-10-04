@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify
 from .models import db, User, NutritionLabel
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
+
 
 user_bp = Blueprint('user_bp', __name__)
 
@@ -27,7 +29,7 @@ def delete_user(user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"An error occurred during deletion: {str(e)}"}), 500
-
+#
 @user_bp.route('/api/foodlog/date/<string:date_str>', methods=['GET'])
 def get_food_by_date(date_str):
     """
@@ -47,4 +49,14 @@ def get_food_by_date(date_str):
         NutritionLabel.date_logged <= end_of_day
     ).all()
 
+    return jsonify([log.to_dict() for log in food_logs]), 200
+
+@user_bp.route('/api/user/<int:user_id>/foodlogs', methods=['GET'])
+def get_all_user_food(user_id):
+    """
+    Retrieves all food logs for a specific user.
+    """
+    food_logs = NutritionLabel.query.filter_by(user_id=user_id).all()
+    if not food_logs:
+        return jsonify({"message": f"No food logs found for user ID {user_id}."}), 404
     return jsonify([log.to_dict() for log in food_logs]), 200
