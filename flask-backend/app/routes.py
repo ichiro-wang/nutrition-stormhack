@@ -3,7 +3,7 @@ from .models import db
 from .models import User
 from .services import process_and_save_nutrition_label
 from flask_login import login_user, logout_user, login_required, current_user
-from nutritionfunctions import calcTDEE, calcMacronutrients
+from .nutritionfunctions import calcTDEE, calcMacronutrients
 
 # Create a Blueprint for the app
 main = Blueprint('main', __name__)
@@ -29,14 +29,6 @@ def create_user():
         'Very active': 1.725,
         'Extremely active': 1.9
     }
-
-
-    if 'name' in data: name = data.get('name')
-    if 'age' in data: age = data.get('age')
-    if 'weight' in data: weight = data.get('weight')
-    if 'height' in data: height = data.get('height')
-    if 'gender' in data: gender = data.get('gender')
-    if 'activity_level' in data: activity_level = data.get('activity_level')
 
     try:
         if 'name' in data: name = data['name']
@@ -75,12 +67,13 @@ def create_user():
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
-@main.route('/api/user/<int:user_id>', methods=['PUT'])
-def update_user_profile(user_id):
+@main.route('/api/user/update', methods=['PUT'])
+@login_required
+def update_user_profile():
     """
     Updates a user's profile data.
     """
-    user = User.query.get_or_404(user_id)
+    user = current_user
     data = request.json
 
     ACTIVITY_LEVELS = {
@@ -115,31 +108,33 @@ def update_user_profile(user_id):
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
-@main.route('/api/scan-nutrition-label', methods=['POST'])
-def scan_nutrition_label():
+@main.route('/api/add-food', methods=['POST'])
+@login_required
+def addFood():
     """
-    Accepts user_id, food_name, quantity, and an image of a nutrition label.
+    Accepts quantity, food_name, and an image of a nutrition label.
     Processes the image, saves the data, and returns the newly created nutrition log.
     """
-    # --- Form data validation ---
-    required_fields = ['user_id', 'quantity', 'food_name']
-    for field in required_fields:
-        if field not in request.form or not request.form.get(field).strip():
-            return jsonify({"error": f"Missing or empty required field: {field}"}), 400
+    # --- Data validation ---
+    data = request.form if request.form else request.json
+    if not data:
+        return jsonify({"error": "Missing request data"}), 400
 
-    if 'image' not in request.files or request.files['image'].filename == '':
-        return jsonify({"error": "Missing or empty required file: image"}), 400
+    quantity = data.get('quantity')
+    food_name = data.get('food_name')
+    image_file = request.files.get('image')
+
+    if not quantity or not food_name or not image_file:
+        return jsonify({"error": "Missing required fields: quantity, food_name, or image"}), 400
 
     try:
-        user_id = int(request.form.get('user_id'))
-        quantity = float(request.form.get('quantity'))
+        quantity = float(quantity)
         if quantity <= 0:
             return jsonify({"error": "Quantity must be a positive number"}), 400
     except (ValueError, TypeError):
-        return jsonify({"error": "Invalid data format for user_id or quantity."}), 400
+        return jsonify({"error": "Invalid data format for quantity."}), 400
 
-    food_name = request.form.get('food_name')
-    image_file = request.files['image']
+    user_id = current_user.id
 
     try:
         new_label, error = process_and_save_nutrition_label(user_id, food_name, quantity, image_file)
@@ -147,11 +142,8 @@ def scan_nutrition_label():
         if error:
             return jsonify({"error": error}), 400
 
-        # The `to_dict()` method is assumed to exist on the NutritionLabel model
-        # to serialize the object to a dictionary for the JSON response.
         return jsonify(new_label.to_dict()), 201
     except Exception as e:
-        # This will catch errors from the service, like User not found (404) or other processing errors.
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 @main.route('/api/data', methods=['POST'])

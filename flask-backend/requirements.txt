@@ -3,3 +3,6 @@ SQLAlchemy==1.4.36
 Flask-Migrate==3.1.0
 Flask-Cors==3.0.10
 python-dotenv==0.19.2
+Flask-Login==0.6.2
+werkzeug==2.2.3
+Pillow==11.3.0

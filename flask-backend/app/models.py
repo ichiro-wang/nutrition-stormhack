@@ -6,6 +6,7 @@ JSON = db.JSON
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)    # Profile information
+    name = db.Column(db.String(150), unique=True, nullable=False)
     age = db.Column(db.Integer, nullable=True)
     weight = db.Column(db.Float, nullable=True) # in kg
     height = db.Column(db.Float, nullable=True) # in cm
