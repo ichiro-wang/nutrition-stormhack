@@ -2,9 +2,13 @@ from flask import Blueprint, jsonify, request
 from .models import db
 from .models import User
 from .services import process_and_save_nutrition_label
+from flask_login import LoginManager
+from nutritionfunctions import calcTDEE, calcMacronutrients
 
 # Create a Blueprint for the app
 main = Blueprint('main', __name__)
+
+login_manager = LoginManager()
 
 @main.route('/api/health', methods=['GET'])
 def health_check():
@@ -17,20 +21,60 @@ def create_user():
     Creates a new user.
     """
     data = request.json
-    if not data or 'username' not in data:
-        return jsonify({"error": "Missing username"}), 400
+    if not data:
+        return jsonify({"error": "Invalid JSON data"}), 400
+    
+    ACTIVITY_LEVELS = {
+        'Sedentary': 1.2,
+        'Lightly active': 1.375,
+        'Moderately active': 1.55,
+        'Very active': 1.725,
+        'Extremely active': 1.9
+    }
 
-    username = data['username']
 
-    if User.query.filter_by(username=username).first():
-        return jsonify({"error": f"Username '{username}' already exists."}), 409
+    if 'name' in data: name = data.get('name')
+    if 'age' in data: age = data.get('age')
+    if 'weight' in data: weight = data.get('weight')
+    if 'height' in data: height = data.get('height')
+    if 'gender' in data: gender = data.get('gender')
+    if 'activity_level' in data: activity_level = data.get('activity_level')
 
-    new_user = User(username=username)
+    try:
+        if 'name' in data: name = data['name']
+        if 'age' in data: age = int(data['age'])
+        if 'weight' in data: weight = float(data['weight'])
+        if 'height' in data: height = float(data['height'])
+        if 'gender' in data:
+            gender = str(data['gender']).upper()
+            if gender not in ['M', 'F']:
+                return jsonify({"error": "Gender must be 'M' or 'F'"}), 400
+            gender = gender
+        if 'activity_level' in data:
+            activity_level_str = data['activity_level']
+            if activity_level_str not in ACTIVITY_LEVELS:
+                return jsonify({"error": f"Invalid activity_level. Must be one of: {list(ACTIVITY_LEVELS.keys())}"}), 400
+            activity_level = ACTIVITY_LEVELS[activity_level_str]
+        
+        if User.query.filter_by(name=name).first():
+            return jsonify({"error": f"Username '{name}' already exists."}), 409
+        
+        rec_calories = calcTDEE(weight, height, age, gender, activity_level)
+        rec_macros = calcMacronutrients(rec_calories)
+        rec_protein = rec_macros['protein_grams']
+        rec_carbs = rec_macros['carbs_grams']
+        rec_fats = rec_macros['fats_grams']
+        
+        new_user = User(name=name, age=age, weight=weight, height=height, gender=gender, activity_level=activity_level, rec_calories=rec_calories, rec_protein=rec_protein, rec_carbs=rec_carbs, rec_fats=rec_fats)
 
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify(new_user.to_dict()), 201
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({"message": f"User {new_user.id} profile created successfully."}), 200
+    except (ValueError, TypeError):
+        return jsonify({"error": "Invalid data format for one of the fields."}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 
 @main.route('/api/user/<int:user_id>', methods=['PUT'])
