@@ -1,11 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+JSON = db.JSON
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    # Profile information
+    id = db.Column(db.Integer, primary_key=True)    # Profile information
     age = db.Column(db.Integer, nullable=True)
     weight = db.Column(db.Float, nullable=True) # in kg
     height = db.Column(db.Float, nullable=True) # in cm
@@ -13,7 +12,7 @@ class User(db.Model):
     activity_level = db.Column(db.String(50), nullable=True) # e.g., 'Sedentary'
 
     # Calculated values
-    tdee = db.Column(db.Float, nullable=True) # Total Daily Energy Expenditure
+    rec_Calories = db.Column(db.Float, nullable=True) # Total Daily Energy Expenditure
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -41,3 +40,29 @@ class Post(db.Model):
 
     def __repr__(self):
         return f'<Post {self.title}>'
+
+class NutritionLabel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    food_name = db.Column(db.String(100), nullable=False)
+    quantity = db.Column(db.Float, nullable=False)
+    nutrition_data = db.Column(JSON, nullable=False) # Stores calculated totals
+    date_logged = db.Column(db.DateTime, nullable=False)
+    image_url = db.Column(db.String(255), nullable=True)
+
+    user = db.relationship('User', backref=db.backref('nutrition_labels', lazy=True, cascade="all, delete-orphan"))
+
+    def __repr__(self):
+        return f'<NutritionLabel {self.food_name} for user {self.user_id}>'
+
+    def to_dict(self):
+        """Serializes the nutrition label object to a dictionary."""
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'food_name': self.food_name,
+            'quantity': self.quantity,
+            'nutrition_data': self.nutrition_data,
+            'date_logged': self.date_logged.isoformat(),
+            'image_url': self.image_url
+        }
