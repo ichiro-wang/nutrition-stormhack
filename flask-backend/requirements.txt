@@ -3,3 +3,6 @@ SQLAlchemy==1.4.36
 Flask-Migrate==3.1.0
 Flask-Cors==3.0.10
 python-dotenv==0.19.2
+pillow==11.3.0
+flask-sqlalchemy==3.2.4
+tesseract==0.3.13
