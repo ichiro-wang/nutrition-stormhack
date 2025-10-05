@@ -31,29 +31,6 @@ The frontend is built with **React**, providing a clean and interactive interfac
 - **SQLite / PostgreSQL** for data persistence
 - **Google Generative AI (optional integration)** for analysis enhancement
 
----
-
-## 📁 Project Structure
-
-```
-nutrition-stormhack-main/
-├── frontend/                # React frontend (UI + components)
-│   ├── public/
-│   ├── src/
-│   ├── package.json
-│   └── index.html
-│
-├── flask-backend/           # Python backend (API + OCR + DB)
-│   ├── app.py / main.py
-│   ├── config.py
-│   ├── requirements.txt
-│   └── models/, routes/, utils/
-│
-└── README.md
-```
-
----
-
 ## ⚙️ Installation & Setup
 
 ### Backend Setup (Flask)
