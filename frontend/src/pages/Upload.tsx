@@ -24,17 +24,17 @@ const Upload = () => {
 
     upload({
       image: file,
-      name: data.name,
-      qty: Number(data.qty),
-      date: new Date(data.date),
+      food_name: data.name,
+      quantity: Number(data.qty),
+      date_logged: new Date(data.date),
     });
 
     reset();
   };
 
   return (
-    <FullPage>
-      <Card className="w-[500px]">
+    <FullPage className="flex flex-col pt-10 gap-3 justify-start">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Upload a Nutrition Label</CardTitle>
         </CardHeader>

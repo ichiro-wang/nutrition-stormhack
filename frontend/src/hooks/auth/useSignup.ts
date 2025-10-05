@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import "../api";
 import api from "../api";
@@ -9,7 +9,7 @@ export interface SignupArgs {
   weight: number;
   height: number;
   gender: Gender;
-  activityLevel: ActivityLevel;
+  activity_level: ActivityLevel;
 }
 
 const signupApi = async (payload: SignupArgs): Promise<User> => {
@@ -25,6 +25,7 @@ const signupApi = async (payload: SignupArgs): Promise<User> => {
 
 export const useSignup = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     mutate: signup,
@@ -36,7 +37,8 @@ export const useSignup = () => {
       return signupApi(payload);
     },
 
-    onSuccess: () => {
+    onSuccess: (res) => {
+      queryClient.setQueryData(["user"], res);
       navigate(`/home`);
     },
 
