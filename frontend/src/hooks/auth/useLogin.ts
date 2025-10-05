@@ -34,7 +34,8 @@ export const useLogin = () => {
     },
 
     onSuccess: (res) => {
-      queryClient.setQueryData(["user"], res);
+      console.log(res)
+      // queryClient.setQueryData(["user"], res);
       navigate(`/home`);
     },
 

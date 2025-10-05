@@ -78,6 +78,8 @@ def create_user():
 
         db.session.add(new_user)
         db.session.commit()
+        
+        login_user(new_user, remember=True)
         return jsonify({"message": f"User {new_user.id} profile created successfully."}), 200
     except Exception as e:
         db.session.rollback()
@@ -187,7 +189,7 @@ def login():
     user = User.query.filter_by(name=data['name']).first()
     if not user:
         return jsonify({"error": "User not found"}), 404
-    login_user(user)
+    login_user(user, remember=True)
     return jsonify({"message": f"Logged in as {user.name}"}), 200
 
 @main.route('/api/logout', methods=['POST'])

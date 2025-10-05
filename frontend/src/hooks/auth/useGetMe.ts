@@ -7,7 +7,8 @@ const getMe = async (): Promise<User> => {
     return mockUser;
   }
 
-  const res = await api.get("/me");
+  console.log("get me");
+  const res = await api.get("/get-user");
   return res.data;
 };
 
