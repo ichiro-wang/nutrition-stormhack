@@ -22,7 +22,7 @@ import {
 
 const Home = () => {
   const { user, isLoading: isLoadingUser } = useGetMe();
-  const { foodList, isLoading, error } = useGetAllFood();
+  const { foodList, isLoading, isFetching, error } = useGetAllFood();
   const { deleteFood, isLoading: isDeleting } = useDeleteFood();
 
   if (isLoading) {
@@ -56,59 +56,65 @@ const Home = () => {
         </Button>
       </ButtonGroup>
 
-      {foodList?.map((food) => {
-        return (
-          <Card key={food.id} className="w-full gap-1">
-            <CardHeader>
-              <CardTitle className="text-lg">{food.food_name}</CardTitle>
-              <CardAction>
-                <Button onClick={() => deleteFood(food.id)} className="bg-red-500">
-                  Delete
-                </Button>
-              </CardAction>
-            </CardHeader>
-            <CardContent className="flex flex-col">
-              <p>
-                <strong className="font-semibold">Quantity: </strong>
-                {food.quantity}
-              </p>
-              <p>
-                <strong className="font-semibold">Calories: </strong>
-                {food.nutrition_data2.filter((food) => food.name === "Calories").at(0)?.value}
-              </p>
-              <p>
-                <strong className="font-semibold">Date: </strong>
-                {dateToString(food.date_logged)}
-              </p>
+      {isLoading || isFetching ? (
+        <Card className="w-full flex justify-center items-center h-[200px]">
+          <Spinner />
+        </Card>
+      ) : (
+        foodList?.map((food) => {
+          return (
+            <Card key={food.id} className="w-full gap-1">
+              <CardHeader>
+                <CardTitle className="text-lg">{food.food_name}</CardTitle>
+                <CardAction>
+                  <Button onClick={() => deleteFood(food.id)} className="bg-red-500">
+                    Delete
+                  </Button>
+                </CardAction>
+              </CardHeader>
+              <CardContent className="flex flex-col">
+                <p>
+                  <strong className="font-semibold">Quantity: </strong>
+                  {food.quantity}
+                </p>
+                <p>
+                  <strong className="font-semibold">Calories: </strong>
+                  {food.nutrition_data2.filter((food) => food.name === "Calories").at(0)?.value}
+                </p>
+                <p>
+                  <strong className="font-semibold">Date: </strong>
+                  {dateToString(food.date_logged)}
+                </p>
 
-              <h1 className="text-center font-semibold py-1">Nutrition Data</h1>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  width={350}
-                  height={250}
-                  data={food.nutrition_data}
-                  margin={{ bottom: 30 }}
-                  className=""
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" angle={-45} textAnchor="end" interval={0} />
-                  <YAxis>
-                    <Label
-                      value="Amount (grams)"
-                      angle={-90}
-                      position="insideLeft"
-                      style={{ textAnchor: "middle" }}
-                    />
-                  </YAxis>
-                  <Tooltip />
-                  {/* <Legend /> */}
-                  <Bar dataKey="value" fill="#8884d8" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        );
-      })}
+                <h1 className="text-center font-semibold py-1">Nutrition Data</h1>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    width={350}
+                    height={250}
+                    data={food.nutrition_data}
+                    margin={{ bottom: 30 }}
+                    className=""
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" angle={-45} textAnchor="end" interval={0} />
+                    <YAxis>
+                      <Label
+                        value="Amount (grams)"
+                        angle={-90}
+                        position="insideLeft"
+                        style={{ textAnchor: "middle" }}
+                      />
+                    </YAxis>
+                    <Tooltip />
+                    {/* <Legend /> */}
+                    <Bar dataKey="value" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          );
+        })
+      )}
     </FullPage>
   );
 };
