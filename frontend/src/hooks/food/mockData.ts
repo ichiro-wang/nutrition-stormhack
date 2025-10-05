@@ -1,3 +1,17 @@
+export const mockUser: User = {
+  id: 1,
+  name: "John Doe",
+  age: 25,
+  weight: 70, // kg
+  height: 175, // cm
+  gender: "M",
+  activity_level: "Moderately active",
+  rec_calories: 2500, // kcal
+  rec_protein: 120, // g
+  rec_carbs: 300, // g
+  rec_fats: 70, // g
+};
+
 export const mockFoods: Food[] = [
   {
     id: 1,

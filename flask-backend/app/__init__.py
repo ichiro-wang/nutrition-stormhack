@@ -2,11 +2,13 @@ from flask import Flask
 from flask_login import LoginManager
 from .models import User, db
 from flask_migrate import Migrate
+from flask_cors import CORS
 
 login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
     
     # Load configuration
     app.config.from_object('config.Config')
