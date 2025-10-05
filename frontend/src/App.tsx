@@ -7,6 +7,7 @@ import Upload from "./pages/Upload";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Compare from "./pages/Compare";
+import Recommended from "./pages/Recommended";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,6 +31,7 @@ const App = () => {
             <Route path="/home" element={<Home />} />
             <Route path="/upload" element={<Upload />} />
             <Route path="/compare" element={<Compare />} />
+            <Route path="/rec" element={<Recommended />} />
           </Route>
         </Routes>
       </BrowserRouter>
