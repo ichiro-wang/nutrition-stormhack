@@ -88,3 +88,26 @@ def get_all_user_food():
         results.append(log_dict)
 
     return jsonify(results), 200
+
+
+@user_bp.route('/api/foodlog/<int:log_id>', methods=['DELETE'])
+@login_required
+def delete_food_log(food_id):
+    """
+    Deletes a specific food log by its ID.
+    """
+    item = NutritionLabel.query.get(food_id)
+
+    if not item:
+        return jsonify({"error": f"Food log with ID {food_id} not found."}), 404
+
+    if food_id.user_id != current_user.id:
+        return jsonify({"error": "Forbidden: You do not have permission to delete this log."}), 403
+
+    try:
+        db.session.delete(item)
+        db.session.commit()
+        return jsonify({"message": f"Food log with ID {food_id} has been deleted."}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"An error occurred during deletion: {str(e)}"}), 500
