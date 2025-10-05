@@ -1,8 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useQueryClient } from "@tanstack/react-query";
+import { useGetMe } from "@/hooks/auth/useGetMe";
 
 const Navbar = () => {
+  const { user, isLoading } = useGetMe();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -17,6 +19,8 @@ const Navbar = () => {
           Logout
         </Link>
       </Button>
+
+      <h1 className="absolute left-4 px-3 py-1">{!isLoading && user?.name}</h1>
     </nav>
   );
 };
