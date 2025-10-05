@@ -16,14 +16,15 @@ def parse_nutrition_text(text):
     """
     nutrition_data = {}
     nutrition_data2 = {}
+    # General nutrients, usually per serving
     patterns = {
         'fat': r'Total Fat\s+([\d.]+)g',
         'protein': r'Protein\s+([\d.]+)g'
     }
-    pattern2 ={
-        'Serving Size g': r'Serving Size g \s+([\d.]+\s*\w+)',
-        'Servings Size (Qty)': r'Servings Per Container Qty:\s+([\d.]+)', 
-        'Calories': r'Calories\s+([\d.]+)'
+    pattern2 = {
+        'serving_size': r'Serving Size\s+([^\n]+)',
+        'calories': r'Calories\s+([\d.]+)',
+        'servings_per_container': r'Servings Per Container\s+(?:about\s+)?([\d.]+)'
     }
     for key, pattern in patterns.items():
         match = re.search(pattern, text, re.IGNORECASE)
@@ -40,6 +41,7 @@ def parse_nutrition_text(text):
                 nutrition_data2[key] = float(match.group(1))
             except ValueError:
                 nutrition_data2[key] = match.group(1)
+            nutrition_data2[key] = match.group(1).strip()
 
     return (nutrition_data, nutrition_data2)
 
@@ -80,6 +82,8 @@ def process_and_save_nutrition_label(user_id, food_name, quantity, image_file):
         'Serving Size g': parsed_data[1].get('Serving Size g', 0), 
         'Servings Size (Qty)': parsed_data[1].get('Servings Per Container Qty', 0)
     }
+    calculated_totals2 = parsed_data[1]
+    calculated_totals2['Calories'] = calculated_totals2.get('Calories', 0) * quantity if isinstance(calculated_totals2.get('Calories', 0), (int, float)) else calculated_totals2.get('Calories', 0)
     
     new_label = NutritionLabel(
         user_id=user_id,

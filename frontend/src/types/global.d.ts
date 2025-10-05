@@ -1,4 +1,4 @@
-type Gender = "Male" | "Female";
+type Gender = "M" | "F";
 
 type ActivityLevel =
   | "Sedentary"
@@ -14,10 +14,27 @@ type User = {
   weight: number;
   height: number;
   gender: Gender;
-  activityLevel: ActivityLevel;
+  activity_level: ActivityLevel;
+};
+
+type NutritionDatum1 = {
+  name: string;
+  value: number;
+};
+
+type NutritionDatum2 = {
+  Calories: number;
+  "Serving Size g": number;
+  "Servings Size (Qty)": number;
 };
 
 type Food = {
   id: number;
-  
+  user_id: number;
+  food_name: string;
+  quantity: number;
+  image_url: string;
+  nutrition_data: NutritionDatum1[];
+  nutrition_data2: NutritionDatum2[];
+  date_logged: string;
 }

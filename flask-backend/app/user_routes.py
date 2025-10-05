@@ -77,6 +77,14 @@ def get_all_user_food():
             ]
             log_dict['nutrition_data'] = transformed_nutrition_data
         
+        # Transform nutrition_data2 from a dictionary to a list of objects
+        if 'nutrition_data2' in log_dict and isinstance(log_dict['nutrition_data2'], dict):
+            transformed_nutrition_data2 = [
+                {"name": key.replace('_', ' ').title(), "value": value}
+                for key, value in log_dict['nutrition_data2'].items()
+            ]
+            log_dict['nutrition_data2'] = transformed_nutrition_data2
+
         results.append(log_dict)
 
     return jsonify(results), 200
