@@ -21,8 +21,8 @@ def parse_nutrition_text(text):
         'protein': r'Protein\s+([\d.]+)g'
     }
     pattern2 ={
-        'Serving Size g': r'Serving Size g \s+([\s.]+\s*\w+)',
-        'Servings Size (Qty)': r'Servings Per Container Qty:\s+([\s.]+)', 
+        'Serving Size g': r'Serving Size g \s+([\d.]+\s*\w+)',
+        'Servings Size (Qty)': r'Servings Per Container Qty:\s+([\d.]+)', 
         'Calories': r'Calories\s+([\d.]+)'
     }
     for key, pattern in patterns.items():
@@ -54,7 +54,7 @@ def process_and_save_nutrition_label(user_id, food_name, quantity, image_file):
     image_bytes = image_file.read()
     
     # --- Save the image and create a URL ---
-    filename = secure_filename(f"{datetime.utcnow().isoformat()}-{image_file.filename}".replace(":", "-"))
+    filename = secure_filename(f"{datetime.now().isoformat()}-{image_file.filename}".replace(":", "-"))
     upload_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'instance', 'uploads')
     os.makedirs(upload_folder, exist_ok=True)
     image_path = os.path.join(upload_folder, filename)
@@ -67,7 +67,7 @@ def process_and_save_nutrition_label(user_id, food_name, quantity, image_file):
     parsed_data = parse_nutrition_text(extracted_text)
 
     if not parsed_data:
-        return None, "Could not parse nutrition data from image."
+        return None, "Could not parse nutrition data frsom image."
 
     calculated_totals = {
         key: round(value * quantity, 2)
@@ -78,7 +78,7 @@ def process_and_save_nutrition_label(user_id, food_name, quantity, image_file):
     calculated_totals2 = {
         'Caloreies': parsed_data[1].get('Calories', 0) * quantity if isinstance(parsed_data[1].get('Calories', 0), (int, float)) else parsed_data[1].get('Calories', 0),
         'Serving Size g': parsed_data[1].get('Serving Size g', 'N/A'),
-        'Servings Size (Qty)': parsed_data[1].get('Servings Size (Qty)', 'N/A')
+        'Servings Size (Qty)': parsed_data[1].get('Servings Per Container Qty', 'N/A')
     }
     
     new_label = NutritionLabel(
@@ -87,7 +87,7 @@ def process_and_save_nutrition_label(user_id, food_name, quantity, image_file):
         quantity=quantity,
         nutrition_data=calculated_totals,
         nutrition_data2=calculated_totals2,
-        date_logged=datetime.utcnow(),
+        date_logged=datetime.now(),
         image_url=image_url
     )
 
