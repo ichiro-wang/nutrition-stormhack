@@ -55,6 +55,17 @@ def get_food_by_date(date_str):
 
     return jsonify([log.to_dict() for log in food_logs]), 200
 
+@user_bp.route('/api/foodlog/<int:id>', methods=['GET'])
+@login_required
+def get_food_by_id(id):
+    """
+    Get single item of food by its ID.
+    """
+
+    food = NutritionLabel.query.get_or_404(id)
+
+    return jsonify(food.to_dict()), 200
+
 @user_bp.route('/api/user/foodlogs', methods=['GET'])
 @login_required
 def get_all_user_food():

@@ -75,20 +75,37 @@ def process_and_save_nutrition_label(user_id, food_name, quantity, image_file):
     if not parsed_data:
         return None, "Could not parse nutrition data from image."
 
-    # calculated_totals = {
-    #     key: round(value * quantity, 2)
-    #     for key, value in parsed_data[0].items()
-    #     if isinstance(value, (int, float))
-    # }
+    calculated_totals = {
+        key: round(value * quantity, 2)
+        for key, value in parsed_data[0].items()
+        if isinstance(value, (int, float))
+    }
     
-    # calculated_totals2 = {
-    #     'Calories': parsed_data[1].get('Calories', 0) * quantity if isinstance(parsed_data[1].get('Calories', 0), (int, float)) else parsed_data[1].get('Calories', 0),
-    #     'Serving Size g': parsed_data[1].get('Serving Size g', 0), 
-    #     'Servings Size (Qty)': parsed_data[1].get('Servings Per Container Qty', 0)
-    # }
-    calculated_totals2 = parsed_data[1]
-    calculated_totals = parsed_data[0]
-    # calculated_totals2['calories'] = calculated_totals2.get('Calories', 0) * quantity if isinstance(calculated_totals2.get('Calories', 0), (int, float)) else calculated_totals2.get('Calories', 0)
+    serving_size_text = parsed_data[1].get('serving_size', '')
+    serving_size_match = re.search(r'(\d+\.?\d*)\s*g', serving_size_text)
+    serving_size_grams = float(serving_size_match.group(1)) if serving_size_match else None
+
+    # Extract calories per serving
+    calories_per_serving = float(parsed_data[1].get('calories', 0))
+
+    # Extract servings per container if available
+    servings_per_container = float(parsed_data[1].get('servings_per_container', 1))
+
+    # --- Compute total calories ---
+    # If serving size in grams is known and quantity refers to grams of food, use proportional scaling.
+    if serving_size_grams and isinstance(quantity, (int, float)):
+        total_calories = (calories_per_serving / serving_size_grams) * quantity
+    else:
+        # Fallback: assume quantity refers to servings
+        total_calories = calories_per_serving * quantity
+
+    calculated_totals2 = {
+        'calories': round(total_calories, 2),
+        'serving_size_grams': serving_size_grams,
+        'calories_per_serving': calories_per_serving,
+        'servings_per_container': servings_per_container
+    }
+
     
     new_label = NutritionLabel(
         user_id=user_id,
