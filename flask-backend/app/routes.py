@@ -163,21 +163,21 @@ def addFood():
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-@main.route('/api/data', methods=['POST'])
-def create_data():
-    data = request.json
-    # Here you would typically process the data and save it to the database
-    return jsonify({"message": "Data created", "data": data}), 201
+# @main.route('/api/data', methods=['POST'])
+# def create_data():
+#     data = request.json
+#     # Here you would typically process the data and save it to the database
+#     return jsonify({"message": "Data created", "data": data}), 201
 
-@main.route('/api/data/<int:data_id>', methods=['GET'])
-def get_data(data_id):
-    # Here you would typically retrieve the data from the database
-    return jsonify({"data_id": data_id, "data": "Sample data"}), 200
+# @main.route('/api/data/<int:data_id>', methods=['GET'])
+# def get_data(data_id):
+#     # Here you would typically retrieve the data from the database
+#     return jsonify({"data_id": data_id, "data": "Sample data"}), 200
 
-@main.route('/api/data/<int:data_id>', methods=['DELETE'])
-def delete_data(data_id):
-    # Here you would typically delete the data from the database
-    return jsonify({"message": "Data deleted", "data_id": data_id}), 204
+# @main.route('/api/data/<int:data_id>', methods=['DELETE'])
+# def delete_data(data_id):
+#     # Here you would typically delete the data from the database
+#     return jsonify({"message": "Data deleted", "data_id": data_id}), 204
 
 @main.route('/api/login', methods=['POST'])
 def login():
