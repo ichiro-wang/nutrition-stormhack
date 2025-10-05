@@ -15,14 +15,16 @@ def parse_nutrition_text(text):
     Uses regular expressions to find nutrient information.
     """
     nutrition_data = {}
+    nutrition_data2 = {}
     patterns = {
-        'Serving Size g': r'Serving Size g \s+([\s.]+\s*\w+)',
-        'Servings Size (Qty)': r'Servings Per Container Qty:\s+([\s.]+)', 
-        'calories': r'Calories\s+([\d.]+)',
         'fat': r'Total Fat\s+([\d.]+)g',
         'protein': r'Protein\s+([\d.]+)g'
     }
-
+    pattern2 ={
+        'Serving Size g': r'Serving Size g \s+([\s.]+\s*\w+)',
+        'Servings Size (Qty)': r'Servings Per Container Qty:\s+([\s.]+)', 
+        'Calories': r'Calories\s+([\d.]+)'
+    }
     for key, pattern in patterns.items():
         match = re.search(pattern, text, re.IGNORECASE)
         if match:
@@ -30,8 +32,16 @@ def parse_nutrition_text(text):
                 nutrition_data[key] = float(match.group(1))
             except ValueError:
                 nutrition_data[key] = match.group(1)
+    
+    for key, pattern in pattern2.items():
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            try:
+                nutrition_data2[key] = float(match.group(1))
+            except ValueError:
+                nutrition_data2[key] = match.group(1)
 
-    return nutrition_data
+    return (nutrition_data, nutrition_data2)
 
 def process_and_save_nutrition_label(user_id, food_name, quantity, image_file):
     """
@@ -61,15 +71,22 @@ def process_and_save_nutrition_label(user_id, food_name, quantity, image_file):
 
     calculated_totals = {
         key: round(value * quantity, 2)
-        for key, value in parsed_data.items()
+        for key, value in parsed_data[0].items()
         if isinstance(value, (int, float))
     }
-
+    
+    calculated_totals2 = {
+        'Caloreies': parsed_data[1].get('Calories', 0) * quantity if isinstance(parsed_data[1].get('Calories', 0), (int, float)) else parsed_data[1].get('Calories', 0),
+        'Serving Size g': parsed_data[1].get('Serving Size g', 'N/A'),
+        'Servings Size (Qty)': parsed_data[1].get('Servings Size (Qty)', 'N/A')
+    }
+    
     new_label = NutritionLabel(
         user_id=user_id,
         food_name=food_name,
         quantity=quantity,
         nutrition_data=calculated_totals,
+        nutrition_data2=calculated_totals2,
         date_logged=datetime.utcnow(),
         image_url=image_url
     )
