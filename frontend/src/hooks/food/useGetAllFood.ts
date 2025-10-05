@@ -15,6 +15,7 @@ export const useGetAllFood = () => {
   const {
     data: foodList,
     isPending: isLoading,
+    isFetching,
     error,
   } = useQuery({
     queryKey: ["food", "all"],
@@ -25,5 +26,9 @@ export const useGetAllFood = () => {
     retry: false,
   });
 
-  return { foodList, isLoading, error };
+  const foodListByDate = foodList?.sort(
+    (a, b) => new Date(b.date_logged).getTime() - new Date(a.date_logged).getTime()
+  );
+
+  return { foodList: foodListByDate, isLoading, isFetching, error };
 };

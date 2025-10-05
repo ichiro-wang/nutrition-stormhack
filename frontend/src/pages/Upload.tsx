@@ -29,7 +29,7 @@ const Upload = () => {
       date_logged: new Date(data.date),
     });
 
-    reset();
+    // reset();
   };
 
   return (
