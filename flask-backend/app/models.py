@@ -31,8 +31,8 @@ class User(db.Model, UserMixin):
             'activity_level': self.activity_level,
             'rec_calories': self.rec_calories,
             'rec_protein': self.rec_protein,
-            'rec_carbs': self.rec_carbs,
-            'rec_fats': self.rec_fats
+            'rec_carb': self.rec_carbs,
+            'rec_fat': self.rec_fats
         }
     
     def get_id(self):

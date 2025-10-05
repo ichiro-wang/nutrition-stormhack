@@ -71,10 +71,15 @@ def add_daily_food():
         NutritionLabel.date_logged <= end_of_day, 
         NutritionLabel.user_id == current_user.id
     ).all()
+
+    print("Food logs today:", len(food_logs_today))
+    for f in food_logs_today:
+        print(f.id, f.food_name, f.date_logged, f.nutrition_data, f.nutrition_data2)
+
     intake = {
-        "calories": sum(int(f.nutrition_data2["calories"]) for f in food_logs_today),
-        "fat": sum(f.nutrition_data["fat"] for f in food_logs_today),
-        "carb": sum(f.nutrition_data["carb"] for f in food_logs_today),
-        "protein": sum(f.nutrition_data["protein"] for f in food_logs_today)
+    "calories": sum(int(f.nutrition_data2.get("calories", 0)) for f in food_logs_today),
+    "fat": sum(float(f.nutrition_data.get("fat", 0)) for f in food_logs_today),
+    "carb": sum(float(f.nutrition_data.get("carb", 0)) for f in food_logs_today),
+    "protein": sum(float(f.nutrition_data.get("protein", 0)) for f in food_logs_today),
     }
     return jsonify(intake), 200

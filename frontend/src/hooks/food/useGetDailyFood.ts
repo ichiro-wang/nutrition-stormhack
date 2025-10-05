@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import api from "../api";
 
 const fetchDailyFood = async (): Promise<Food> => {
-  const res = await api.get("get-daily-food"); 
+  const res = await api.get("/get-daily-food"); 
   return res.data;
 };
 
