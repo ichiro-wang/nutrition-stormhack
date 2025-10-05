@@ -1,9 +1,10 @@
 import ButtonGroup from "@/components/ButtonGroup";
 import FullPage from "@/components/FullPage";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { useGetMe } from "@/hooks/auth/useGetMe";
+import { useDeleteFood } from "@/hooks/food/useDeleteFood";
 import { useGetAllFood } from "@/hooks/food/useGetAllFood";
 import { dateToString } from "@/lib/utils";
 import { Link } from "react-router-dom";
@@ -22,6 +23,7 @@ import {
 const Home = () => {
   const { user, isLoading: isLoadingUser } = useGetMe();
   const { foodList, isLoading, error } = useGetAllFood();
+  const { deleteFood, isLoading: isDeleting } = useDeleteFood();
 
   if (isLoading) {
     return (
@@ -30,6 +32,8 @@ const Home = () => {
       </FullPage>
     );
   }
+
+  // console.log(foodList?.[0].nutrition_data2.filter((food) => food.name === "Calories"));
 
   return (
     <FullPage className="flex flex-col py-10 gap-3 justify-start">
@@ -57,6 +61,11 @@ const Home = () => {
           <Card key={food.id} className="w-full gap-1">
             <CardHeader>
               <CardTitle className="text-lg">{food.food_name}</CardTitle>
+              <CardAction>
+                <Button onClick={() => deleteFood(food.id)} className="bg-red-500">
+                  Delete
+                </Button>
+              </CardAction>
             </CardHeader>
             <CardContent className="flex flex-col">
               <p>
@@ -65,7 +74,7 @@ const Home = () => {
               </p>
               <p>
                 <strong className="font-semibold">Calories: </strong>
-                {food.nutrition_data2.Calories}
+                {food.nutrition_data2.filter((food) => food.name === "Calories").at(0)?.value}
               </p>
               <p>
                 <strong className="font-semibold">Date: </strong>

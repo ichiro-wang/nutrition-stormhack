@@ -41,6 +41,7 @@ export const useSignup = () => {
     },
 
     onError: (error) => {
+      console.log(error)
       console.error("Error with signup");
     },
   });

@@ -1,3 +1,4 @@
+import ButtonGroup from "@/components/ButtonGroup";
 import Form from "@/components/Form";
 import FullPage from "@/components/FullPage";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLogin, type LoginArgs } from "@/hooks/auth/useLogin";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const { login, isLoading, error } = useLogin();
@@ -40,9 +42,19 @@ const Login = () => {
             </Form.FormRow>
 
             <Form.FormRow>
-              <Button type="submit" disabled={isLoading} className="min-w-20">
-                Login
-              </Button>
+              <ButtonGroup className="">
+                <Button type="submit" disabled={isLoading} className="min-w-20">
+                  Login
+                </Button>
+                <small>
+                  Don't have an account?{" "}
+                  <Button disabled={isLoading} variant="link" type="button" className="p-0">
+                    <Link className="" to="/signup">
+                      Sign up
+                    </Link>
+                  </Button>
+                </small>
+              </ButtonGroup>
             </Form.FormRow>
           </Form>
         </CardContent>
