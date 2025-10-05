@@ -74,7 +74,7 @@ const Recommended = () => {
           {/* --- Display Gemini results --- */}
           {geminiData && (
             <p className="mt-4 text-center">
-              Gemini Results: {JSON.stringify(geminiData)}
+              Gemini Results: {geminiData.response}
             </p>
           )}
         </CardContent>

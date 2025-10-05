@@ -4,6 +4,7 @@ import api from "../api";
 
 const fetchGemini = async () => {
   const res = await api.post("/gemini"); 
+  console.log("Gemini response:", res);
   return res.data;
 };
 
