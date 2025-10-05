@@ -22,6 +22,8 @@ def create_app():
     app.register_blueprint(main_blueprint)
     from .user_routes import user_bp as user_blueprint
     app.register_blueprint(user_blueprint)
+    from .gem_routes import gem_bp as gem_blueprint
+    app.register_blueprint(gem_blueprint)
 
     login_manager.init_app(app)
 
