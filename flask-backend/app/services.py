@@ -16,9 +16,10 @@ def parse_nutrition_text(text):
     """
     nutrition_data = {}
     patterns = {
+        'Serving Size g': r'Serving Size g \s+([\s.]+\s*\w+)',
+        'Servings Size (Qty)': r'Servings Per Container Qty:\s+([\s.]+)', 
         'calories': r'Calories\s+([\d.]+)',
         'fat': r'Total Fat\s+([\d.]+)g',
-        'carbohydrate': r'Total Carbohydrate\s+([\d.]+)g',
         'protein': r'Protein\s+([\d.]+)g'
     }
 

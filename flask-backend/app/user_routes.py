@@ -59,4 +59,19 @@ def get_all_user_food(user_id):
     food_logs = NutritionLabel.query.filter_by(user_id=user_id).all()
     if not food_logs:
         return jsonify({"message": f"No food logs found for user ID {user_id}."}), 404
-    return jsonify([log.to_dict() for log in food_logs]), 200
+
+    results = []
+    for log in food_logs:
+        log_dict = log.to_dict()
+        
+        # Transform nutrition_data from a dictionary to a list of objects
+        if 'nutrition_data' in log_dict and isinstance(log_dict['nutrition_data'], dict):
+            transformed_nutrition_data = [
+                {"name": key.replace('_', ' ').title(), "value": value}
+                for key, value in log_dict['nutrition_data'].items()
+            ]
+            log_dict['nutrition_data'] = transformed_nutrition_data
+        
+        results.append(log_dict)
+
+    return jsonify(results), 200
