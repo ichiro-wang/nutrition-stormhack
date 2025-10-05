@@ -9,6 +9,7 @@ from .nutritionfunctions import calcTDEE, calcMacronutrients
 main = Blueprint('main', __name__)
 
 @main.route('/api/health', methods=['GET'])
+@login_required
 def health_check():
     """Health check endpoint."""
     return jsonify({"status": "healthy"}), 200
@@ -31,20 +32,33 @@ def create_user():
     }
 
     try:
-        if 'name' in data: name = data['name']
-        if 'age' in data: age = int(data['age'])
-        if 'weight' in data: weight = float(data['weight'])
-        if 'height' in data: height = float(data['height'])
-        if 'gender' in data:
-            gender = str(data['gender']).upper()
-            if gender not in ['M', 'F']:
-                return jsonify({"error": "Gender must be 'M' or 'F'"}), 400
-            gender = gender
-        if 'activity_level' in data:
-            activity_level_str = data['activity_level']
-            if activity_level_str not in ACTIVITY_LEVELS:
-                return jsonify({"error": f"Invalid activity_level. Must be one of: {list(ACTIVITY_LEVELS.keys())}"}), 400
-            activity_level = ACTIVITY_LEVELS[activity_level_str]
+        name = data.get('name')
+        if not name:
+            return jsonify({"error": "Missing 'name' field."}), 400
+
+        try:
+            age = int(data.get('age'))
+        except Exception:
+            return jsonify({"error": f"Invalid format for 'age': {data.get('age')}"}), 400
+
+        try:
+            weight = float(data.get('weight'))
+        except Exception:
+            return jsonify({"error": f"Invalid format for 'weight': {data.get('weight')}"}), 400
+
+        try:
+            height = float(data.get('height'))
+        except Exception:
+            return jsonify({"error": f"Invalid format for 'height': {data.get('height')}"}), 400
+
+        gender = str(data.get('gender')).upper()
+        if gender not in ['M', 'F']:
+            return jsonify({"error": "Gender must be 'M' or 'F'"}), 400
+
+        activity_level_str = data.get('activity_level')
+        if activity_level_str not in ACTIVITY_LEVELS:
+            return jsonify({"error": f"Invalid activity_level. Must be one of: {list(ACTIVITY_LEVELS.keys())}"}), 400
+        activity_level = ACTIVITY_LEVELS[activity_level_str]
         
         if User.query.filter_by(name=name).first():
             return jsonify({"error": f"Username '{name}' already exists."}), 409
@@ -55,13 +69,16 @@ def create_user():
         rec_carbs = rec_macros['carbs_grams']
         rec_fats = rec_macros['fats_grams']
         
-        new_user = User(name=name, age=age, weight=weight, height=height, gender=gender, activity_level=activity_level, rec_calories=rec_calories, rec_protein=rec_protein, rec_carbs=rec_carbs, rec_fats=rec_fats)
+        new_user = User(
+            name=name, age=age, weight=weight, height=height,
+            gender=gender, activity_level=activity_level,
+            rec_calories=rec_calories, rec_protein=rec_protein,
+            rec_carbs=rec_carbs, rec_fats=rec_fats
+        )
 
         db.session.add(new_user)
         db.session.commit()
         return jsonify({"message": f"User {new_user.id} profile created successfully."}), 200
-    except (ValueError, TypeError):
-        return jsonify({"error": "Invalid data format for one of the fields."}), 400
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
@@ -100,7 +117,7 @@ def update_user_profile():
             user.activity_level_factor = ACTIVITY_LEVELS[activity_level_str]
             
         db.session.commit()
-        return jsonify({"message": f"User {user_id} profile updated successfully."}), 200
+        return jsonify({"message": f"User {user.name} profile updated successfully."}), 200
     except (ValueError, TypeError):
         return jsonify({"error": "Invalid data format for one of the fields."}), 400
     except Exception as e:

@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_login import LoginManager
 from .models import User, db
+from flask_migrate import Migrate
 
 login_manager = LoginManager()
 
@@ -12,6 +13,9 @@ def create_app():
 
     # Initialize extensions
     db.init_app(app)
+
+    #Initialize Flask-Migrate
+    migrate = Migrate(app, db)
 
     # Import and register blueprints
     from .routes import main as main_blueprint

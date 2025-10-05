@@ -14,7 +14,11 @@ class User(db.Model, UserMixin):
     activity_level = db.Column(db.String(50), nullable=True) # e.g., 'Sedentary'
 
     # Calculated values
-    rec_Calories = db.Column(db.Float, nullable=True) # Total Daily Energy Expenditure
+    rec_calories = db.Column(db.Float, nullable=True) # Total Daily Energy Expenditure
+    rec_protein = db.Column(db.Float, nullable=True)  # in grams
+    rec_carbs = db.Column(db.Float, nullable=True)    # in grams
+    rec_fats = db.Column(db.Float, nullable=True)     # in grams
+
     def to_dict(self):
         """Serializes the user object to a dictionary."""
         return {
@@ -25,7 +29,10 @@ class User(db.Model, UserMixin):
             'height': self.height,
             'gender': self.gender,
             'activity_level': self.activity_level,
-            'Recommend Calories': self.rec_Calories
+            'rec_calories': self.rec_calories,
+            'rec_protein': self.rec_protein,
+            'rec_carbs': self.rec_carbs,
+            'rec_fats': self.rec_fats
         }
     
     def get_id(self):
