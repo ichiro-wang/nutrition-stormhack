@@ -1,18 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "../api";
+import { mockFoods } from "./mockData";
 
 const getFoodApi = async (id: number): Promise<Food> => {
   if (import.meta.env.VITE_ENV === "mock") {
-    return {
-      id: 1,
-      nutrition_data: [
-        { name: "sugar", value: 50 },
-        { name: "fat", value: 12 },
-      ],
-      date_logged: new Date(),
-      food_name: "Fruit loops",
-      quantity: 1,
-    };
+    const food = mockFoods.find((f) => f.id === id);
+    if (!food) throw new Error(`Food with id ${id} not found`);
+    return food;
   }
 
   const res = await api.get(`/${id}`);
