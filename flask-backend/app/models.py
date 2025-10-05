@@ -48,6 +48,7 @@ class NutritionLabel(db.Model):
     food_name = db.Column(db.String(100), nullable=False)
     quantity = db.Column(db.Float, nullable=False)
     nutrition_data = db.Column(JSON, nullable=False) # Stores calculated totals
+    nutrition_data2 = db.Column(JSON, nullable=True) # Stores additional nutrition info
     date_logged = db.Column(db.DateTime, nullable=False)
     image_url = db.Column(db.String(255), nullable=True)
 
@@ -64,6 +65,7 @@ class NutritionLabel(db.Model):
             'food_name': self.food_name,
             'quantity': self.quantity,
             'nutrition_data': self.nutrition_data,
+            'nutrition_data2': self.nutrition_data2,
             'date_logged': self.date_logged.isoformat(),
             'image_url': self.image_url
         }
