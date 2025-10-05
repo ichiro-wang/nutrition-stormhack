@@ -33,7 +33,7 @@ const Home = () => {
 
   return (
     <FullPage className="flex flex-col py-10 gap-3 justify-start">
-      {user && <p>{user.name}</p>}
+      {user && <p>Welcome {user.name}</p>}
       <ButtonGroup className="w-full grid grid-cols-2 gap-1">
         <Button className="col-span-1 p-0" variant="default" type="button">
           <Link to="/upload" className="w-full">
@@ -62,6 +62,10 @@ const Home = () => {
               <p>
                 <strong className="font-semibold">Quantity: </strong>
                 {food.quantity}
+              </p>
+              <p>
+                <strong className="font-semibold">Calories: </strong>
+                {food.nutrition_data2.Calories}
               </p>
               <p>
                 <strong className="font-semibold">Date: </strong>
