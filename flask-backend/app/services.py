@@ -76,7 +76,7 @@ def process_and_save_nutrition_label(user_id, food_name, quantity, image_file):
     }
     
     calculated_totals2 = {
-        'Caloreies': parsed_data[1].get('Calories', 0) * quantity if isinstance(parsed_data[1].get('Calories', 0), (int, float)) else parsed_data[1].get('Calories', 0),
+        'Calories': parsed_data[1].get('Calories', 0) * quantity if isinstance(parsed_data[1].get('Calories', 0), (int, float)) else parsed_data[1].get('Calories', 0),
         'Serving Size g': parsed_data[1].get('Serving Size g', 0), 
         'Servings Size (Qty)': parsed_data[1].get('Servings Per Container Qty', 0)
     }
