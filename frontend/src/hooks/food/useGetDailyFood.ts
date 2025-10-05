@@ -14,7 +14,7 @@ export const useGetDailyFood = () => {
     isError,
     refetch,
   } = useQuery<Food>({
-    queryKey: ["food"],
+    queryKey: ["food", "daily"],
     queryFn: fetchDailyFood,
   });
 

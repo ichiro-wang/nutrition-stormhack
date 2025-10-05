@@ -24,6 +24,9 @@ export const useGetAllFood = () => {
       return getAllFoodApi();
     },
     retry: false,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    // refetchOnMount: false,
   });
 
   const foodListByDate = foodList?.sort(

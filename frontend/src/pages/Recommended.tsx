@@ -1,25 +1,17 @@
 import FullPage from "@/components/FullPage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { useGetMe } from "@/hooks/auth/useGetMe";
 import { useGetDailyFood } from "@/hooks/food/useGetDailyFood";
-import { useGetUser } from "@/hooks/food/useGetUser";
 import { format } from "date-fns";
-import {
-  Bar,
-  BarChart,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 // 👇 Define nutrient shape
 type NutrientTotals = Record<string, number>;
 
 const Recommended = () => {
   const today = new Date();
-  const { user, isLoading: isLoadingUser } = useGetUser();
+  const { user, isLoading: isLoadingUser } = useGetMe();
   const { foodData: todayFoods, isLoading: isLoadingFoods } = useGetDailyFood();
 
   const foodsArray = Array.isArray(todayFoods) ? todayFoods : [];
@@ -40,7 +32,6 @@ const Recommended = () => {
 
     return acc;
   }, {});
-
 
   if (isLoadingUser || isLoadingFoods) {
     return (
@@ -69,9 +60,7 @@ const Recommended = () => {
     <FullPage className="flex flex-col pt-10 gap-3 justify-start">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>
-            Daily Intake vs Recommended ({format(today, "MMM d, yyyy")})
-          </CardTitle>
+          <CardTitle>Daily Intake vs Recommended ({format(today, "MMM d, yyyy")})</CardTitle>
         </CardHeader>
 
         <CardContent>
