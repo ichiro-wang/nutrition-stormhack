@@ -78,7 +78,7 @@ const Upload = () => {
               <Input
                 id="date"
                 type="date"
-                defaultValue="2025-10-04"
+                defaultValue="2025-10-05"
                 {...register("date", { required: "Date required" })}
               />
             </Form.FormRow>

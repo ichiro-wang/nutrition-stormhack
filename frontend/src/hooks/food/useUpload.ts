@@ -17,8 +17,8 @@ const uploadApi = async (payload: UploadArgs): Promise<Food> => {
 
   const formData = new FormData();
   formData.append("image", payload.image); // image should be file
-  formData.append("name", payload.food_name);
-  formData.append("qty", String(payload.quantity));
+  formData.append("food_name", payload.food_name);
+  formData.append("quantity", String(payload.quantity));
   formData.append("date", payload.date_logged.toISOString());
 
   const res = await api.post("/add-food", formData, {
@@ -49,6 +49,7 @@ export const useUpload = () => {
     },
 
     onError: (error) => {
+      console.log(error);
       console.log(error.message);
     },
   });

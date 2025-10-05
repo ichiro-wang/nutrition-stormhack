@@ -5,10 +5,11 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 
 login_manager = LoginManager()
+cors = CORS(supports_credentials=True)
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
+    cors.init_app(app)
     
     # Load configuration
     app.config.from_object('config.Config')
