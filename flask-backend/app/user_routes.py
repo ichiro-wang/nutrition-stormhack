@@ -90,7 +90,7 @@ def get_all_user_food():
     return jsonify(results), 200
 
 
-@user_bp.route('/api/foodlog/<int:log_id>', methods=['DELETE'])
+@user_bp.route('/api/foodlog/<int:food_id>', methods=['DELETE'])
 @login_required
 def delete_food_log(food_id):
     """
@@ -100,9 +100,6 @@ def delete_food_log(food_id):
 
     if not item:
         return jsonify({"error": f"Food log with ID {food_id} not found."}), 404
-
-    if food_id.user_id != current_user.id:
-        return jsonify({"error": "Forbidden: You do not have permission to delete this log."}), 403
 
     try:
         db.session.delete(item)

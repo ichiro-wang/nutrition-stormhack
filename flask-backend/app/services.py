@@ -20,7 +20,7 @@ def parse_nutrition_text(text):
     patterns = {
         'fat': r'Total Fat\s+([\d.]+)g',
         'protein': r'Protein\s+([\d.]+)g',
-        'carb': r'Total Carbohydrates\s+([\d.]+)g',
+        'carb': r'Total\s*Carb\w*\s+([\d.]+)g'
     }
     pattern2 = {
         'serving_size': r'Serving Size\s+([^\n]+)',
