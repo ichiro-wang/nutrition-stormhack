@@ -5,7 +5,7 @@ type ActivityLevel =
   | "Lightly active"
   | "Moderately active"
   | "Very active"
-  | "Extra active";
+  | "Extremely active";
 
 type User = {
   id: number;
@@ -21,16 +21,12 @@ type User = {
   rec_fats: number;
 };
 
-type NutritionDatum1 = {
+type NutritionDatum = {
   name: string;
   value: number;
 };
 
-type NutritionDatum2 = {
-  Calories: number;
-  "Serving Size g": number;
-  "Servings Size (Qty)": number;
-};
+
 
 type Food = {
   id: number;
@@ -38,7 +34,7 @@ type Food = {
   food_name: string;
   quantity: number;
   image_url: string;
-  nutrition_data: NutritionDatum1[];
-  nutrition_data2: NutritionDatum2;
+  nutrition_data: NutritionDatum[];
+  nutrition_data2: NutritionDatum[];
   date_logged: string;
 };

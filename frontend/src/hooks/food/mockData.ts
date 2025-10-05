@@ -26,11 +26,11 @@ export const mockFoods: Food[] = [
       { name: "Cholesterol", value: 186 },
       { name: "Sodium", value: 62 },
     ],
-    nutrition_data2: {
-      Calories: 70,
-      "Serving Size g": 50,
-      "Servings Size (Qty)": 1,
-    },
+    nutrition_data2: [
+      { name: "Calories", value: 70 },
+      { name: "Serving Size g", value: 50 },
+      { name: "Servings Size (Qty)", value: 1 },
+    ],
     date_logged: "2025-10-05T01:24:51.317362",
   },
   {
@@ -46,11 +46,11 @@ export const mockFoods: Food[] = [
       { name: "Cholesterol", value: 0 },
       { name: "Sodium", value: 2 },
     ],
-    nutrition_data2: {
-      Calories: 95,
-      "Serving Size g": 182,
-      "Servings Size (Qty)": 1,
-    },
+    nutrition_data2: [
+      { name: "Calories", value: 95 },
+      { name: "Serving Size g", value: 182 },
+      { name: "Servings Size (Qty)", value: 1 },
+    ],
     date_logged: "2025-10-05T09:10:12.003241",
   },
   {
@@ -66,11 +66,11 @@ export const mockFoods: Food[] = [
       { name: "Cholesterol", value: 85 },
       { name: "Sodium", value: 74 },
     ],
-    nutrition_data2: {
-      Calories: 165,
-      "Serving Size g": 100,
-      "Servings Size (Qty)": 1,
-    },
+    nutrition_data2: [
+      { name: "Calories", value: 165 },
+      { name: "Serving Size g", value: 100 },
+      { name: "Servings Size (Qty)", value: 1 },
+    ],
     date_logged: "2025-10-04T18:45:22.112431",
   },
   {
@@ -86,11 +86,11 @@ export const mockFoods: Food[] = [
       { name: "Cholesterol", value: 0 },
       { name: "Sodium", value: 1 },
     ],
-    nutrition_data2: {
-      Calories: 105,
-      "Serving Size g": 118,
-      "Servings Size (Qty)": 1,
-    },
+    nutrition_data2: [
+      { name: "Calories", value: 105 },
+      { name: "Serving Size g", value: 118 },
+      { name: "Servings Size (Qty)", value: 1 },
+    ],
     date_logged: "2025-10-04T12:33:15.543211",
   },
 ];

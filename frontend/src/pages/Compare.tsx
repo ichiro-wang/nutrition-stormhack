@@ -17,7 +17,7 @@ import { useState } from "react";
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 const Compare = () => {
-  const { foodList, isLoadingList } = useGetAllFood();
+  const { foodList, isLoading: isLoadingList } = useGetAllFood();
 
   const [id1, setId1] = useState<number | null>(null);
   const [id2, setId2] = useState<number | null>(null);
@@ -102,8 +102,12 @@ const Compare = () => {
                 data={[
                   {
                     name: "Calories",
-                    [food1.food_name]: food1.nutrition_data2.Calories,
-                    [food2.food_name]: food2.nutrition_data2.Calories,
+                    [food1.food_name]: food1.nutrition_data2
+                      .filter((food) => food.name === "Calories")
+                      .at(0)?.value,
+                    [food2.food_name]: food2.nutrition_data2
+                      .filter((food) => food.name === "Calories")
+                      .at(0)?.value,
                   },
                 ]}
               >

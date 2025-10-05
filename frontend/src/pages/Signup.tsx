@@ -1,3 +1,4 @@
+import ButtonGroup from "@/components/ButtonGroup";
 import Form from "@/components/Form";
 import FullPage from "@/components/FullPage";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ import {
 import { useSignup, type SignupArgs } from "@/hooks/auth/useSignup";
 import "react-hook-form";
 import { useForm, Controller } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const { signup, isLoading, error } = useSignup();
@@ -129,7 +131,7 @@ const Signup = () => {
                         <SelectItem value="Lightly active">Lightly active</SelectItem>
                         <SelectItem value="Moderately active">Moderately active</SelectItem>
                         <SelectItem value="Very active">Very active</SelectItem>
-                        <SelectItem value="Extra active">Extra active</SelectItem>
+                        <SelectItem value="Extremely active">Extra active</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -138,9 +140,19 @@ const Signup = () => {
             </Form.FormRow>
 
             <Form.FormRow>
-              <Button type="submit" disabled={isLoading} className="min-w-20">
-                Signup
-              </Button>
+              <ButtonGroup className="">
+                <Button type="submit" disabled={isLoading} className="min-w-20">
+                  Signup
+                </Button>
+                <small>
+                  Have an account?{" "}
+                  <Button disabled={isLoading} variant="link" type="button" className="p-0">
+                    <Link className="text-blue-600" to="/login">
+                      Log in
+                    </Link>
+                  </Button>
+                </small>
+              </ButtonGroup>
             </Form.FormRow>
           </Form>
         </CardContent>
