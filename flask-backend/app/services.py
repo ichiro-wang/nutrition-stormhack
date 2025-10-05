@@ -20,7 +20,7 @@ def parse_nutrition_text(text):
     patterns = {
         'fat': r'Total Fat\s+([\d.]+)g',
         'protein': r'Protein\s+([\d.]+)g',
-        'carbohydrate': r'Total Carbohydrate\s+([\d.]+)g',
+        'carb': r'Total Carbohydrates\s+([\d.]+)g',
     }
     pattern2 = {
         'serving_size': r'Serving Size\s+([^\n]+)',
@@ -72,18 +72,19 @@ def process_and_save_nutrition_label(user_id, food_name, quantity, image_file):
     if not parsed_data:
         return None, "Could not parse nutrition data from image."
 
-    calculated_totals = {
-        key: round(value * quantity, 2)
-        for key, value in parsed_data[0].items()
-        if isinstance(value, (int, float))
-    }
+    # calculated_totals = {
+    #     key: round(value * quantity, 2)
+    #     for key, value in parsed_data[0].items()
+    #     if isinstance(value, (int, float))
+    # }
     
-    calculated_totals2 = {
-        'Calories': parsed_data[1].get('Calories', 0) * quantity if isinstance(parsed_data[1].get('Calories', 0), (int, float)) else parsed_data[1].get('Calories', 0),
-        'Serving Size g': parsed_data[1].get('Serving Size g', 0), 
-        'Servings Size (Qty)': parsed_data[1].get('Servings Per Container Qty', 0)
-    }
+    # calculated_totals2 = {
+    #     'Calories': parsed_data[1].get('Calories', 0) * quantity if isinstance(parsed_data[1].get('Calories', 0), (int, float)) else parsed_data[1].get('Calories', 0),
+    #     'Serving Size g': parsed_data[1].get('Serving Size g', 0), 
+    #     'Servings Size (Qty)': parsed_data[1].get('Servings Per Container Qty', 0)
+    # }
     calculated_totals2 = parsed_data[1]
+    calculated_totals = parsed_data[0]
     # calculated_totals2['calories'] = calculated_totals2.get('Calories', 0) * quantity if isinstance(calculated_totals2.get('Calories', 0), (int, float)) else calculated_totals2.get('Calories', 0)
     
     new_label = NutritionLabel(
