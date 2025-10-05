@@ -102,8 +102,8 @@ const Signup = () => {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Gender</SelectLabel>
-                        <SelectItem value="Male">Male</SelectItem>
-                        <SelectItem value="Female">Female</SelectItem>
+                        <SelectItem value="M">Male</SelectItem>
+                        <SelectItem value="F">Female</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -112,9 +112,9 @@ const Signup = () => {
             </Form.FormRow>
 
             <Form.FormRow>
-              <Label htmlFor="activityLevel">Activity Level</Label>
+              <Label htmlFor="activity_level">Activity Level</Label>
               <Controller
-                name="activityLevel"
+                name="activity_level"
                 control={control}
                 rules={{ required: "Activity level required" }}
                 render={({ field }) => (
