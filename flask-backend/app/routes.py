@@ -200,3 +200,9 @@ def logout():
 @login_required
 def get_current_user():
     return jsonify({"name": current_user.name}), 200
+
+@main.route('/api/get-user', methods=['GET'])
+@login_required
+def get_user():
+    user = User.query.get_or_404(current_user.id)
+    return jsonify(user.to_dict()), 200

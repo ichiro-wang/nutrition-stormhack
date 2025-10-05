@@ -9,3 +9,4 @@ pytesseract==0.3.10
 Flask-Login==0.6.2
 werkzeug==2.2.3
 psycopg2-binary==2.9.10
+google-generativeai==0.3.1
