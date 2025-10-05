@@ -107,7 +107,7 @@ def delete_food_log(food_id):
     """
     Deletes a specific food log by its ID.
     """
-    item = NutritionLabel.query.get(food_id)
+    item = NutritionLabel.query.get_or_404(food_id)
 
     if not item:
         return jsonify({"error": f"Food log with ID {food_id} not found."}), 404
