@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import "../api";
 import api from "../api";
+import { mockUser } from "../food/mockData";
 
 export interface SignupArgs {
   name: string;
@@ -14,10 +15,7 @@ export interface SignupArgs {
 
 const signupApi = async (payload: SignupArgs): Promise<User> => {
   if (import.meta.env.VITE_ENV === "mock") {
-    return {
-      id: 1,
-      ...payload,
-    };
+    return mockUser;
   }
   const res = await api.post("/signup", payload);
   return res.data;

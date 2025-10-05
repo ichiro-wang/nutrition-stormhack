@@ -7,7 +7,7 @@ const getAllFoodApi = async (): Promise<Food[]> => {
     return mockFoods;
   }
 
-  const res = await api.get("/all");
+  const res = await api.get("/user/foodlogs");
   return res.data;
 };
 

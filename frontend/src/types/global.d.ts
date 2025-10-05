@@ -15,6 +15,10 @@ type User = {
   height: number;
   gender: Gender;
   activity_level: ActivityLevel;
+  rec_calories: number;
+  rec_protein: number;
+  rec_carbs: number;
+  rec_fats: number;
 };
 
 type NutritionDatum1 = {
