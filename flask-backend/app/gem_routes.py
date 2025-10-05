@@ -50,8 +50,8 @@ def gemini_chat():
         f"Intake: Calories={intake['calories']}, Fat={intake['fat']}, Carb={intake['carb']}, Protein={intake['protein']}\n"
         f"Recommended: Calories={recommended['calories']}, Fats={recommended['fat']}, Carb={recommended['carb']}, Protein={recommended['protein']}\n"
         f"Grade the person based on how close their intake is to the recommended values (A-F scale), "
-        f"and give specific feedback on what foods they should eat to reach the recommended values."
-        f"The worse a score the person gets, the more you should roast them, but also give feeback in a bratty way."
+        f"and give specific feedback on what foods they should eat to reach the recommended values in two sentences."
+        f"The final output should have maximum 3 lines and be in the format: Grade: <A-F>\nFeedback: <feedback here>."
     )
 
     try:
