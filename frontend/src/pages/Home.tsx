@@ -33,8 +33,6 @@ const Home = () => {
     );
   }
 
-  // console.log(foodList?.[0].nutrition_data2.filter((food) => food.name === "Calories"));
-
   return (
     <FullPage className="flex flex-col py-10 gap-3 justify-start">
       {user && <p>Welcome {user.name}</p>}
