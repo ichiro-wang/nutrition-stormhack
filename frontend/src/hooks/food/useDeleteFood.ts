@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api";
 
 const deleteFoodApi = async (id: number) => {
-  const res = await api.delete(`/${id}`);
+  const res = await api.delete(`/foodlog/${id}`);
   return res.data;
 };
 
@@ -20,7 +20,7 @@ export const useDeleteFood = () => {
     },
 
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ["food", "list"] });
+      queryClient.invalidateQueries({ queryKey: ["food", "all"] });
     },
 
     onError: (error) => {

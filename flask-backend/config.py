@@ -9,6 +9,7 @@ class Config:
         "pool_recycle": 300
     }
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyBK_Dp5PQXojAbO5ktW9JgzWNgyQ5-Yt6M")
+    DEBUG = True
 
     @staticmethod
     def init_app(app):

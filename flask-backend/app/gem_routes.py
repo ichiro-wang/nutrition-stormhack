@@ -59,3 +59,22 @@ def gemini_chat():
         return jsonify({"response": result}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@gem_bp.route('/api/get-daily-food', methods=['GET'])
+@login_required
+def add_daily_food():
+    start_of_day = datetime.combine(datetime.now().date(), datetime.min.time())
+    end_of_day = datetime.combine(datetime.now().date(), datetime.max.time())
+
+    food_logs_today = NutritionLabel.query.filter(
+        NutritionLabel.date_logged >= start_of_day,
+        NutritionLabel.date_logged <= end_of_day, 
+        NutritionLabel.user_id == current_user.id
+    ).all()
+    intake = {
+        "calories": sum(int(f.nutrition_data2["calories"]) for f in food_logs_today),
+        "fat": sum(f.nutrition_data["fat"] for f in food_logs_today),
+        "carb": sum(f.nutrition_data["carb"] for f in food_logs_today),
+        "protein": sum(f.nutrition_data["protein"] for f in food_logs_today)
+    }
+    return jsonify(intake), 200

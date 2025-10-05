@@ -43,7 +43,7 @@ export const useUpload = () => {
     },
 
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ["food", "list"] });
+      queryClient.invalidateQueries({ queryKey: ["food", "all"] });
       queryClient.setQueryData(["food", res.id], res);
       navigate("/home");
     },
