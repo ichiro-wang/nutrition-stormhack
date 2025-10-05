@@ -9,6 +9,7 @@ import {
   SelectItem,
   SelectLabel,
 } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 import { useGetAllFood } from "@/hooks/food/useGetAllFood";
 import { useGetFood } from "@/hooks/food/useGetFood";
 import { dateToString } from "@/lib/utils";
@@ -22,6 +23,15 @@ const Compare = () => {
   const [id2, setId2] = useState<number | null>(null);
   const { food: food1, isLoading: isLoading1 } = useGetFood(id1);
   const { food: food2, isLoading: isLoading2 } = useGetFood(id2);
+
+  const nutritionData =
+    food1 && food2
+      ? food1.nutrition_data.map((nutrient) => ({
+          name: nutrient.name,
+          [food1.food_name]: nutrient.value,
+          [food2.food_name]: food2.nutrition_data.find((n) => n.name === nutrient.name)?.value ?? 0,
+        }))
+      : [];
 
   return (
     <FullPage className="flex flex-col pt-10 gap-3 justify-start">
@@ -79,34 +89,58 @@ const Compare = () => {
 
       <Card className="w-full gap-1">
         <CardHeader>
-          <CardTitle>Comparison Chart</CardTitle>
+          <CardTitle>Calorie Comparison Chart</CardTitle>
         </CardHeader>
         <CardContent>
-          {food1 && food2 && (
+          {isLoading1 || isLoading2 ? (
+            <div className="flex justify-center items-center h-60">
+              <Spinner />
+            </div>
+          ) : food1 && food2 ? (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart
                 data={[
                   {
                     name: "Calories",
-                    [food1.food_name]: food1.calories,
-                    [food2.food_name]: food2.calories,
+                    [food1.food_name]: food1.nutrition_data2.Calories,
+                    [food2.food_name]: food2.nutrition_data2.Calories,
                   },
-                  {
-                    name: "Protein",
-                    [food1.food_name]: food1.protein,
-                    [food2.food_name]: food2.protein,
-                  },
-                  // etc.
                 ]}
               >
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey={food1.food_name} />
-                <Bar dataKey={food2.food_name} />
+                <Bar dataKey={food1.food_name} fill="#b41c50" />
+                <Bar dataKey={food2.food_name} fill="#3d398c" />
               </BarChart>
             </ResponsiveContainer>
+          ) : (
+            <p className="text-center">Select two meals to compare.</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="w-full gap-1">
+        <CardHeader>
+          <CardTitle>Nutrition Comparison Chart</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isLoading1 || isLoading2 ? (
+            <div className="flex justify-center items-center h-60">Loading...</div>
+          ) : food1 && food2 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={nutritionData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey={food1.food_name} fill="#b41c50" />
+                <Bar dataKey={food2.food_name} fill="#3d398c" />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-center">Select two meals to compare.</p>
           )}
         </CardContent>
       </Card>

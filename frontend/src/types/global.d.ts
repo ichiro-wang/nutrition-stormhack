@@ -35,6 +35,6 @@ type Food = {
   quantity: number;
   image_url: string;
   nutrition_data: NutritionDatum1[];
-  nutrition_data2: NutritionDatum2[];
+  nutrition_data2: NutritionDatum2;
   date_logged: string;
-}
+};

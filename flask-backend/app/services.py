@@ -70,7 +70,7 @@ def process_and_save_nutrition_label(user_id, food_name, quantity, image_file):
     parsed_data = parse_nutrition_text(extracted_text)
 
     if not parsed_data:
-        return None, "Could not parse nutrition data frsom image."
+        return None, "Could not parse nutrition data from image."
 
     calculated_totals = {
         key: round(value * quantity, 2)
@@ -78,8 +78,13 @@ def process_and_save_nutrition_label(user_id, food_name, quantity, image_file):
         if isinstance(value, (int, float))
     }
     
+    calculated_totals2 = {
+        'Calories': parsed_data[1].get('Calories', 0) * quantity if isinstance(parsed_data[1].get('Calories', 0), (int, float)) else parsed_data[1].get('Calories', 0),
+        'Serving Size g': parsed_data[1].get('Serving Size g', 0), 
+        'Servings Size (Qty)': parsed_data[1].get('Servings Per Container Qty', 0)
+    }
     calculated_totals2 = parsed_data[1]
-    calculated_totals2['Calories'] = calculated_totals2.get('Calories', 0) * quantity if isinstance(calculated_totals2.get('Calories', 0), (int, float)) else calculated_totals2.get('Calories', 0)
+    # calculated_totals2['calories'] = calculated_totals2.get('Calories', 0) * quantity if isinstance(calculated_totals2.get('Calories', 0), (int, float)) else calculated_totals2.get('Calories', 0)
     
     new_label = NutritionLabel(
         user_id=user_id,

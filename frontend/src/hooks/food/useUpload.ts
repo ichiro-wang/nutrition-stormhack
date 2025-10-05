@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
+import { mockFoods } from "./mockData";
 
 export interface UploadArgs {
   image: File;
@@ -11,7 +12,7 @@ export interface UploadArgs {
 
 const uploadApi = async (payload: UploadArgs): Promise<Food> => {
   if (import.meta.env.VITE_ENV === "mock") {
-    return { id: 1, nutrition_data: [{ name: "something", value: 10 }], ...payload };
+    return mockFoods[0];
   }
 
   const formData = new FormData();
@@ -20,7 +21,7 @@ const uploadApi = async (payload: UploadArgs): Promise<Food> => {
   formData.append("qty", String(payload.quantity));
   formData.append("date", payload.date_logged.toISOString());
 
-  const res = await api.post("/add", formData, {
+  const res = await api.post("/add-food", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return res.data;
