@@ -15,8 +15,6 @@ class User(db.Model, UserMixin):
 
     # Calculated values
     rec_Calories = db.Column(db.Float, nullable=True) # Total Daily Energy Expenditure
-    rec
-
     def to_dict(self):
         """Serializes the user object to a dictionary."""
         return {
