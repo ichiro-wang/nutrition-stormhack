@@ -1,6 +1,6 @@
 # 🥗 Nutrition Tracker
 
-**Nutrition Tracker** is a full-stack web application that helps users analyze meal nutrition by scanning food labels.  
+**Nutrition Tracker** is a full-stack web application that helps users analyze daily nutrition intake by scanning food labels.  
 It uses **Tesseract OCR** to extract data from nutrition labels and a **Flask** backend to process and analyze the information.  
 The frontend is built with **React**, providing a clean and interactive interface for users to upload, view, and explore nutritional insights.
 
@@ -9,7 +9,7 @@ The frontend is built with **React**, providing a clean and interactive interfac
 ## 🚀 Features
 
 - 📸 **OCR Scanning** – Upload a photo of a nutrition label and extract text automatically using Tesseract.
-- 🧠 **Smart Analysis** – Parse calories,  and claculates macronutrients, and micronutrients from text for structured display.
+- 🧠 **Smart Analysis** – Parse calories, and calculate macronutrients and micronutrients from text for structured display.
 - 💾 **Backend API** – Flask backend processes OCR data and handles business logic.
 - 🌐 **Interactive Frontend** – React UI for uploading images, displaying results, and managing analysis history.
 - ⚡ **Real-time Feedback** – See nutritional summaries instantly after label upload.
