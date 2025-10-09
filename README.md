@@ -19,14 +19,17 @@ The frontend is built with **React**, providing a clean and interactive interfac
 ## 🧩 Tech Stack
 
 ### Frontend
-- **React** 
+- **React (TypeScript)**
+  - **React Router**
+  - **Tanstack Query**
+  - **Recharts**
 
 ### Backend
 - **Flask (Python)**
 - **Tesseract OCR (pytesseract)** for text recognition
 - **Flask-SQLAlchemy**
-- **PostgreSQL** for data persistence
-- **Google Gemini** for analysis enhancement
+- **PostgreSQL**
+- **Google Gemini** to provide users with feedback about their intake
 
 ## ⚙️ Installation & Setup
 
@@ -64,7 +67,7 @@ http://localhost:5000/api/
 
 ## 🧠 How It Works
 
-1. User uploads an image of a food label via the web interface.  
+1. User uploads an image of a food label.  
 2. The image is sent to the Flask API.  
 3. Flask uses **pytesseract** to extract text from the image.  
 4. Extracted data is parsed into structured nutritional info (calories, fat, protein, etc.).  
