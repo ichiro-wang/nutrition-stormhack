@@ -6,17 +6,17 @@ The frontend is built with **React**, providing a clean and interactive interfac
 
 ---
 
-## 🚀 Features
+## Features
 
-- 📸 **OCR Scanning** – Upload a photo of a nutrition label and extract text automatically using Tesseract.
-- 🧠 **Smart Analysis** – Parse calories, and calculate macronutrients and micronutrients from text for structured display.
-- 💾 **Backend API** – Flask backend processes OCR data and handles business logic.
-- 🌐 **Interactive Frontend** – React UI for uploading images, displaying results, and managing analysis history.
-- ⚡ **Real-time Feedback** – See nutritional summaries instantly after label upload.
+- **OCR Scanning** – Upload a photo of a nutrition label and extract text automatically using Tesseract.
+- **Smart Analysis** – Parse calories, and calculate macronutrients and micronutrients from text for structured display.
+- **Backend API** – Flask backend processes OCR data and handles business logic.
+- **Interactive Frontend** – React UI for uploading images, displaying results, and managing analysis history.
+- **Real-time Feedback** – See nutritional summaries instantly after label upload.
 
 ---
 
-## 🧩 Tech Stack
+## Tech Stack
 
 ### Frontend
 - **React (TypeScript)**
@@ -31,7 +31,7 @@ The frontend is built with **React**, providing a clean and interactive interfac
 - **PostgreSQL**
 - **Google Gemini** to provide users with feedback about their intake
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 ### Backend Setup (Flask)
 ```bash
@@ -65,12 +65,10 @@ http://localhost:5000/api/
 
 ---
 
-## 🧠 How It Works
+## How It Works
 
 1. User uploads an image of a food label.  
 2. The image is sent to the Flask API.  
 3. Flask uses **pytesseract** to extract text from the image.  
-4. Extracted data is parsed into structured nutritional info (calories, fat, protein, etc.).  
+4. Extracted data is parsed into structured nutritional info (calories, fat, protein, etc.). 
 5. The frontend displays an easy-to-read summary.
-
-
